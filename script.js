@@ -12,7 +12,7 @@ const feeds = [
   {
     name: "The Denver Post",
     region: "Front Range",
-    url: "https://www.denverpost.com/feed/"
+    url: "https://www.denverpost.com/arcio/rss/"
   }
 ];
 
