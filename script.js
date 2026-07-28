@@ -1,22 +1,22 @@
-cconst feeds = [
+const feeds = [
   {
     name: "Colorado Public Radio",
     region: "Statewide",
     url: "https://www.cpr.org/feed/"
   },
   {
-    name: "The Daily Sentinel",
-    region: "Western Slope",
-    url: "https://www.gjsentinel.com/rss/"
-  },
-  {
     name: "Denver & Front Range News",
     region: "Front Range",
     url: "https://news.google.com/rss/search?q=Denver+Colorado+news"
+  },
+  {
+    name: "Western Slope News",
+    region: "Western Slope",
+    url: "https://news.google.com/rss/search?q=Grand+Junction+Colorado+news"
   }
 ];
-const container = document.getElementById("headlines");
 
+const container = document.getElementById("headlines");
 
 async function loadFeed(feed) {
   try {
@@ -28,7 +28,7 @@ async function loadFeed(feed) {
     const data = await response.json();
 
     let html = `
-<h3>${feed.region || "Colorado News"}</h3>
+<h3>${feed.region}</h3>
 <h2>${feed.name}</h2>
 `;
 
@@ -43,13 +43,14 @@ async function loadFeed(feed) {
         `;
       });
     } else {
-    html += "<p>Feed not available — source link coming soon</p>";
+      html += "<p>No headlines available</p>";
     }
 
     container.innerHTML += html;
 
   } catch (error) {
     container.innerHTML += `
+      <h3>${feed.region}</h3>
       <h2>${feed.name}</h2>
       <p>Feed unavailable</p>
     `;
