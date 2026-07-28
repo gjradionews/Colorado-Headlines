@@ -5,31 +5,20 @@ const feeds = [
     url: "https://www.cpr.org/feed/"
   },
   {
-  name: "Grand Junction News",
-  region: "Western Slope",
-  url: "https://news.google.com/rss/search?q=Grand+Junction+Colorado+news"
-},
- {
-  name: "Colorado Politics",
-  region: "Front Range",
-  url: "https://www.coloradopolitics.com/rss/"
-}
+    name: "Grand Junction News",
+    region: "Western Slope",
+    url: "https://news.google.com/rss/search?q=Grand+Junction+Colorado+news"
+  },
+  {
+    name: "Colorado Politics",
+    region: "Front Range",
+    url: "https://www.coloradopolitics.com/rss/"
+  }
 ];
 
 const container = document.getElementById("headlines");
 
-document.getElementById("date").textContent =
-  new Date().toLocaleString();
-
 async function loadFeed(feed) {
-  let html = `
-    <h3>${feed.region}</h3>
-    <h2>${feed.name}</h2>
-    <p>Loading...</p>
-  `;
-
-  container.innerHTML += html;
-
   try {
     const response = await fetch(
       "https://api.rss2json.com/v1/api.json?rss_url=" +
@@ -37,34 +26,38 @@ async function loadFeed(feed) {
     );
 
     const data = await response.json();
-    console.log(data);
 
-    if (!data.items || data.items.length === 0) {
-      return;
-    }
-
-    let output = `
+    let html = `
       <h3>${feed.region}</h3>
       <h2>${feed.name}</h2>
     `;
 
-    data.items.slice(0,5).forEach(item => {
-      output += `
-        <p>
-          <a href="${item.link}" target="_blank">
-          ${item.title}
-          </a>
-        </p>
-      `;
-    });
+    if (data.items && data.items.length > 0) {
+      data.items.slice(0, 5).forEach(item => {
+        html += `
+          <p>
+            <a href="${item.link}" target="_blank">
+              ${item.title}
+            </a>
+          </p>
+        `;
+      });
+    } else {
+      html += "<p>Feed not available</p>";
+    }
 
-    container.innerHTML += output;
+    container.innerHTML += html;
 
   } catch (error) {
     container.innerHTML += `
+      <h3>${feed.region}</h3>
+      <h2>${feed.name}</h2>
       <p>Feed unavailable</p>
     `;
   }
 }
 
 feeds.forEach(loadFeed);
+
+document.getElementById("date").textContent =
+  new Date().toLocaleString();
