@@ -1,10 +1,15 @@
 const feeds = [
   {
     name: "Colorado Public Radio",
+    region: "Statewide",
     url: "https://www.cpr.org/feed/"
+  },
+  {
+    name: "Grand Junction Daily Sentinel",
+    region: "Western Slope",
+    url: "https://www.gjsentinel.com/rss/"
   }
 ];
-
 const container = document.getElementById("headlines");
 
 async function loadFeed(feed) {
