@@ -1,4 +1,4 @@
-cconst feeds = [
+const feeds = [
   {
     name: "Colorado Public Radio",
     region: "Statewide",
