@@ -13,7 +13,6 @@ const feeds = [
 
 const container = document.getElementById("headlines");
 
-
 async function loadFeed(feed) {
   try {
     const response = await fetch(
@@ -25,7 +24,7 @@ async function loadFeed(feed) {
 
     let section = feed.region.toLowerCase().replace(/ /g, "-");
 
-let html = `
+    let html = `
 <div id="${section}">
 <h3>${feed.region || "Colorado News"}</h3>
 <h2>${feed.name}</h2>
@@ -42,19 +41,24 @@ let html = `
         `;
       });
     } else {
-    html += "<p>Feed not available — source link coming soon</p>";
+      html += "<p>Feed not available — source link coming soon</p>";
     }
-html += "</div>";
+
+    html += "</div>";
+
     container.innerHTML += html;
 
   } catch (error) {
     container.innerHTML += `
-      <h2>${feed.name}</h2>
-      <p>Feed unavailable</p>
+      <div>
+        <h2>${feed.name}</h2>
+        <p>Feed unavailable</p>
+      </div>
     `;
   }
 }
 
 feeds.forEach(loadFeed);
+
 document.getElementById("date").textContent =
   new Date().toLocaleString();
