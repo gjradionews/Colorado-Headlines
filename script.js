@@ -5,14 +5,14 @@ const feeds = [
     url: "https://www.cpr.org/feed/"
   },
   {
-    name: "Denver & Front Range News",
-    region: "Front Range",
-    url: "https://news.google.com/rss/search?q=Denver+Colorado+news"
+    name: "The Daily Sentinel",
+    region: "Western Slope",
+    url: "https://www.gjsentinel.com/rss/"
   },
   {
-    name: "Western Slope News",
-    region: "Western Slope",
-    url: "https://news.google.com/rss/search?q=Grand+Junction+Colorado+news"
+    name: "The Denver Post",
+    region: "Front Range",
+    url: "https://www.denverpost.com/feed/"
   }
 ];
 
@@ -28,9 +28,9 @@ async function loadFeed(feed) {
     const data = await response.json();
 
     let html = `
-<h3>${feed.region}</h3>
-<h2>${feed.name}</h2>
-`;
+      <h3>${feed.region}</h3>
+      <h2>${feed.name}</h2>
+    `;
 
     if (data.items && data.items.length > 0) {
       data.items.slice(0, 5).forEach(item => {
@@ -43,7 +43,7 @@ async function loadFeed(feed) {
         `;
       });
     } else {
-      html += "<p>No headlines available</p>";
+      html += "<p>Feed not available — source link coming soon</p>";
     }
 
     container.innerHTML += html;
