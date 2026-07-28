@@ -5,11 +5,10 @@ const feeds = [
     url: "https://www.cpr.org/feed/"
   },
   {
-    name: "KKCO 11 News",
-    region: "Western Slope",
-    url: "https://www.nbc11news.com/arc/outboundfeeds/rss/"
-  }
-];
+  name: "The Daily Sentinel",
+  region: "Western Slope",
+  url: "https://www.gjsentinel.com/rss/"
+}
 
 const container = document.getElementById("headlines");
 
