@@ -12,6 +12,8 @@ const feeds = [
 ];
 
 const container = document.getElementById("headlines");
+document.getElementById("date").textContent =
+  new Date().toLocaleString();
 
 async function loadFeed(feed) {
   try {
