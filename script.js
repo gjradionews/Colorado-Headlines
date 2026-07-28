@@ -1,4 +1,4 @@
-const feeds = [
+cconst feeds = [
   {
     name: "Colorado Public Radio",
     region: "Statewide",
@@ -15,7 +15,6 @@ const feeds = [
     url: "https://news.google.com/rss/search?q=Denver+Colorado+news"
   }
 ];
-
 const container = document.getElementById("headlines");
 
 
