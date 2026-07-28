@@ -37,6 +37,7 @@ async function loadFeed(feed) {
     );
 
     const data = await response.json();
+    console.log(data);
 
     if (!data.items || data.items.length === 0) {
       return;
