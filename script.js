@@ -23,7 +23,10 @@ async function loadFeed(feed) {
 
     const data = await response.json();
 
-    let html = `<h2>${feed.name}</h2>`;
+    let html = `
+<h3>${feed.region}</h3>
+<h2>${feed.name}</h2>
+`;
 
     if (data.items && data.items.length > 0) {
       data.items.slice(0, 5).forEach(item => {
