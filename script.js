@@ -23,7 +23,10 @@ async function loadFeed(feed) {
 
     const data = await response.json();
 
-    let html = `
+    let section = feed.region.toLowerCase().replace(/ /g, "-");
+
+let html = `
+<div id="${section}">
 <h3>${feed.region || "Colorado News"}</h3>
 <h2>${feed.name}</h2>
 `;
@@ -41,7 +44,7 @@ async function loadFeed(feed) {
     } else {
     html += "<p>Feed not available — source link coming soon</p>";
     }
-
+html += "</div>";
     container.innerHTML += html;
 
   } catch (error) {
