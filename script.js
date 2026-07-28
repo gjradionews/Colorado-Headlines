@@ -12,8 +12,7 @@ const feeds = [
 ];
 
 const container = document.getElementById("headlines");
-document.getElementById("date").textContent =
-  new Date().toLocaleString();
+
 
 async function loadFeed(feed) {
   try {
@@ -51,3 +50,5 @@ async function loadFeed(feed) {
 }
 
 feeds.forEach(loadFeed);
+document.getElementById("date").textContent =
+  new Date().toLocaleString();
