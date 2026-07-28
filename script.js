@@ -10,10 +10,10 @@ const feeds = [
     url: "https://www.gjsentinel.com/rss/"
   },
   {
-    name: "The Denver Post",
-    region: "Front Range",
-    url: "https://www.denverpost.com/arcio/rss/"
-  }
+  name: "Denver7",
+  region: "Front Range",
+  url: "https://www.denver7.com/news/rss"
+}
 ];
 
 const container = document.getElementById("headlines");
