@@ -10,9 +10,9 @@ const feeds = [
     url: "https://www.gjsentinel.com/rss/"
   },
   {
-  name: "Denver7",
+  name: "CBS Colorado",
   region: "Front Range",
-  url: "https://www.denver7.com/news/rss"
+  url: "https://denver.cbslocal.com/feed/"
 }
 ];
 
