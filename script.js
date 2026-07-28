@@ -1,13 +1,8 @@
-const feeds = [
+cconst feeds = [
   {
     name: "Colorado Public Radio",
     region: "Statewide",
     url: "https://www.cpr.org/feed/"
-  },
-  {
-    name: "Grand Junction News",
-    region: "Western Slope",
-    url: "https://news.google.com/rss/search?q=Grand+Junction+Colorado+news"
   },
   {
     name: "Colorado Politics",
@@ -15,10 +10,15 @@ const feeds = [
     url: "https://www.coloradopolitics.com/rss/"
   },
   {
-  name: "Colorado Mountain News",
-  region: "Mountains",
-  url: "https://news.google.com/rss/search?q=Colorado+mountain+towns+ski+fire+weather"
-}
+    name: "Grand Junction News",
+    region: "Western Slope",
+    url: "https://news.google.com/rss/search?q=Grand+Junction+Colorado+news"
+  },
+  {
+    name: "Colorado Mountain News",
+    region: "Mountains",
+    url: "https://news.google.com/rss/search?q=Colorado+mountain+towns+ski+weather+fire"
+  }
 ];
 
 const container = document.getElementById("headlines");
