@@ -5,9 +5,9 @@ const feeds = [
     url: "https://www.cpr.org/feed/"
   },
   {
-    name: "Denver Post",
+    name: "9NEWS Colorado",
     region: "Front Range",
-    url: "https://www.denverpost.com/feed/"
+    url: "https://www.9news.com/feeds/syndication/rss/news"
   },
   {
     name: "Colorado Springs Gazette",
@@ -18,15 +18,5 @@ const feeds = [
     name: "Grand Junction Daily Sentinel",
     region: "Western Slope",
     url: "https://www.gjsentinel.com/rss/"
-  },
-  {
-    name: "Aspen Daily News",
-    region: "Mountains",
-    url: "https://www.aspendailynews.com/rss/"
-  },
-  {
-    name: "Vail Daily",
-    region: "Mountains",
-    url: "https://www.vaildaily.com/feed/"
   }
 ];
