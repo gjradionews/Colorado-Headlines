@@ -15,3 +15,4 @@ const feeds = [
     url: "https://www.9news.com/feeds/syndication/rss/news"
   }
 ];
+feeds.forEach(loadFeed);
