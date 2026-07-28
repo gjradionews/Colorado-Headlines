@@ -24,7 +24,7 @@ async function loadFeed(feed) {
     const data = await response.json();
 
     let html = `
-<h3>${feed.region}</h3>
+<h3>${feed.region || "Colorado News"}</h3>
 <h2>${feed.name}</h2>
 `;
 
