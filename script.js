@@ -10,10 +10,10 @@ const feeds = [
     url: "https://www.gjsentinel.com/rss/"
   },
   {
-  name: "CBS Colorado",
-  region: "Front Range",
-  url: "https://denver.cbslocal.com/feed/"
-}
+    name: "Denver & Front Range News",
+    region: "Front Range",
+    url: "https://news.google.com/rss/search?q=Denver+Colorado+news"
+  }
 ];
 
 const container = document.getElementById("headlines");
