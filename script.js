@@ -5,10 +5,10 @@ const feeds = [
     url: "https://www.cpr.org/feed/"
   },
   {
-    name: "The Daily Sentinel",
-    region: "Western Slope",
-    url: "https://www.gjsentinel.com/rss/"
-  },
+  name: "Grand Junction News",
+  region: "Western Slope",
+  url: "https://news.google.com/rss/search?q=Grand+Junction+Colorado+news"
+},
  {
   name: "Colorado Politics",
   region: "Front Range",
