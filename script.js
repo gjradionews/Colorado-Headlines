@@ -35,7 +35,7 @@ async function loadFeed(feed) {
         `;
       });
     } else {
-      html += "<p>No headlines found</p>";
+    html += "<p>Feed not available — source link coming soon</p>";
     }
 
     container.innerHTML += html;
