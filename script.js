@@ -5,13 +5,14 @@ const feeds = [
     url: "https://www.cpr.org/feed/"
   },
   {
-    name: "The Daily Sentinel",
+    name: "KKCO 11 News",
     region: "Western Slope",
-    url: "https://www.gjsentinel.com/rss/"
+    url: "https://www.nbc11news.com/arc/outboundfeeds/rss/"
   }
 ];
 
 const container = document.getElementById("headlines");
+
 
 async function loadFeed(feed) {
   try {
@@ -38,7 +39,7 @@ async function loadFeed(feed) {
         `;
       });
     } else {
-      html += "<p>Feed not available — source link coming soon</p>";
+    html += "<p>Feed not available — source link coming soon</p>";
     }
 
     container.innerHTML += html;
@@ -52,10 +53,8 @@ async function loadFeed(feed) {
 }
 
 feeds.forEach(loadFeed);
-
 document.getElementById("date").textContent =
   new Date().toLocaleString();
-feeds.forEach(loadFeed);
 
 document.getElementById("date").textContent =
   new Date().toLocaleString();
