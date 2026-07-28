@@ -9,11 +9,11 @@ const feeds = [
     region: "Western Slope",
     url: "https://www.gjsentinel.com/rss/"
   },
-  {
-    name: "The Denver Post",
-    region: "Front Range",
-    url: "https://www.denverpost.com/feed/"
-  }
+ {
+  name: "Colorado Politics",
+  region: "Front Range",
+  url: "https://www.coloradopolitics.com/rss/"
+}
 ];
 
 const container = document.getElementById("headlines");
