@@ -7,9 +7,7 @@ const feeds = [
   {
     name: "Grand Junction Daily Sentinel",
     region: "Western Slope",
-    url: "https://www.gjsentinel.com/rss/"
-  }
-];
+    url: "https://www.gjsentinel.com/search/?f=rss"
 const container = document.getElementById("headlines");
 
 async function loadFeed(feed) {
