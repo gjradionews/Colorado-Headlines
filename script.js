@@ -5,10 +5,11 @@ const feeds = [
     url: "https://www.cpr.org/feed/"
   },
   {
-  name: "The Daily Sentinel",
-  region: "Western Slope",
-  url: "https://www.gjsentinel.com/rss/"
-}
+    name: "The Daily Sentinel",
+    region: "Western Slope",
+    url: "https://www.gjsentinel.com/rss/"
+  }
+];
 
 const container = document.getElementById("headlines");
 
@@ -21,10 +22,7 @@ async function loadFeed(feed) {
 
     const data = await response.json();
 
-    let section = feed.region.toLowerCase().replace(/ /g, "-");
-
     let html = `
-<div id="${section}">
 <h3>${feed.region || "Colorado News"}</h3>
 <h2>${feed.name}</h2>
 `;
@@ -43,20 +41,20 @@ async function loadFeed(feed) {
       html += "<p>Feed not available — source link coming soon</p>";
     }
 
-    html += "</div>";
-
     container.innerHTML += html;
 
   } catch (error) {
     container.innerHTML += `
-      <div>
-        <h2>${feed.name}</h2>
-        <p>Feed unavailable</p>
-      </div>
+      <h2>${feed.name}</h2>
+      <p>Feed unavailable</p>
     `;
   }
 }
 
+feeds.forEach(loadFeed);
+
+document.getElementById("date").textContent =
+  new Date().toLocaleString();
 feeds.forEach(loadFeed);
 
 document.getElementById("date").textContent =
