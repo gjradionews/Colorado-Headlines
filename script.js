@@ -49,23 +49,3 @@ async function loadFeed(feed) {
 }
 
 feeds.forEach(loadFeed);
-Click Commit changes.
-Wait about 1 minute.
-Refresh your website using:
-Ctrl + Shift + R
-
-Then tell me exactly what you see.
-
-Expected result:
-
-Colorado Headlines
-
-Colorado Public Radio
-
-headlines
-
-KKCO 11 News
-
-headlines, or “No headlines found,” or “Feed unavailable”
-
-Once this is stable, we’ll add sources back one at a time. 👍
