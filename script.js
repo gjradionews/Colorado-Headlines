@@ -18,7 +18,18 @@ const feeds = [
 
 const container = document.getElementById("headlines");
 
+document.getElementById("date").textContent =
+  new Date().toLocaleString();
+
 async function loadFeed(feed) {
+  let html = `
+    <h3>${feed.region}</h3>
+    <h2>${feed.name}</h2>
+    <p>Loading...</p>
+  `;
+
+  container.innerHTML += html;
+
   try {
     const response = await fetch(
       "https://api.rss2json.com/v1/api.json?rss_url=" +
@@ -27,37 +38,32 @@ async function loadFeed(feed) {
 
     const data = await response.json();
 
-    let html = `
+    if (!data.items || data.items.length === 0) {
+      return;
+    }
+
+    let output = `
       <h3>${feed.region}</h3>
       <h2>${feed.name}</h2>
     `;
 
-    if (data.items && data.items.length > 0) {
-      data.items.slice(0, 5).forEach(item => {
-        html += `
-          <p>
-            <a href="${item.link}" target="_blank">
-              ${item.title}
-            </a>
-          </p>
-        `;
-      });
-    } else {
-      html += "<p>Feed not available — source link coming soon</p>";
-    }
+    data.items.slice(0,5).forEach(item => {
+      output += `
+        <p>
+          <a href="${item.link}" target="_blank">
+          ${item.title}
+          </a>
+        </p>
+      `;
+    });
 
-    container.innerHTML += html;
+    container.innerHTML += output;
 
   } catch (error) {
     container.innerHTML += `
-      <h3>${feed.region}</h3>
-      <h2>${feed.name}</h2>
       <p>Feed unavailable</p>
     `;
   }
 }
 
 feeds.forEach(loadFeed);
-
-document.getElementById("date").textContent =
-  new Date().toLocaleString();
