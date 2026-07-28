@@ -13,7 +13,12 @@ const feeds = [
     name: "Colorado Politics",
     region: "Front Range",
     url: "https://www.coloradopolitics.com/rss/"
-  }
+  },
+  {
+  name: "Colorado Mountain News",
+  region: "Mountains",
+  url: "https://news.google.com/rss/search?q=Colorado+mountain+towns+ski+fire+weather"
+}
 ];
 
 const container = document.getElementById("headlines");
