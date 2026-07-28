@@ -6,7 +6,13 @@ const feeds = [
   },
   {
     name: "The Daily Sentinel",
-url: "https://www.gjsentinel.com/rss/"
+    region: "Western Slope",
+    url: "https://www.gjsentinel.com/rss/"
+  },
+  {
+    name: "The Denver Post",
+    region: "Front Range",
+    url: "https://www.denverpost.com/feed/"
   }
 ];
 
