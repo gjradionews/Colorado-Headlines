@@ -6,14 +6,27 @@ function googleNewsSite(site) {
   return googleNewsSearch(`site:${site}`);
 }
 
+const coloradoTerms = [
+  "colorado","grand junction","mesa county","western slope","denver","aurora","colorado springs","pueblo",
+  "montrose","delta","aspen","glenwood","rifle","parachute","palisade","fruita","durango","cortez","telluride",
+  "ouray","ridgway","vail","eagle","summit county","pitkin county","garfield county","gunnison","steamboat",
+  "boulder","fort collins","loveland","greeley","lakewood","arvada","thornton","castle rock","jefferson county",
+  "mesa","rockies","broncos","avalanche","nuggets","buffaloes","csu","cu boulder","state capitol","polis"
+];
+
 const feeds = [
   { name: "KREX5 / WesternSlopeNow", region: "Western Slope", urls: ["https://www.westernslopenow.com/feed/", googleNewsSite("westernslopenow.com")] },
-  { name: "Grand Junction Daily Sentinel", region: "Western Slope", urls: [
-      googleNewsSearch("site:gjsentinel.com Grand Junction"),
-      googleNewsSearch("site:gjsentinel.com Mesa County"),
-      googleNewsSearch("site:gjsentinel.com Western Slope"),
-      googleNewsSearch("site:gjsentinel.com Colorado")
-    ] },
+  {
+    name: "Grand Junction Daily Sentinel",
+    region: "Western Slope",
+    urls: [
+      "https://www.gjsentinel.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc&q=Grand%20Junction",
+      "https://www.gjsentinel.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc&q=Mesa%20County",
+      "https://www.gjsentinel.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc&q=Western%20Slope",
+      "https://www.gjsentinel.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc&q=Colorado"
+    ],
+    includeTerms: coloradoTerms
+  },
   { name: "The Business Times — Grand Junction", region: "Western Slope", urls: ["https://thebusinesstimes.com/feed/", googleNewsSite("thebusinesstimes.com")] },
   { name: "Glenwood Springs Post Independent", region: "Western Slope", urls: ["https://www.postindependent.com/feed/", googleNewsSite("postindependent.com")] },
   { name: "Durango Herald", region: "Western Slope", urls: ["https://www.durangoherald.com/feeds/all", googleNewsSite("durangoherald.com")] },
@@ -29,12 +42,16 @@ const feeds = [
   { name: "9NEWS", region: "Front Range", urls: [googleNewsSearch("site:9news.com Colorado"), googleNewsSite("9news.com")] },
   { name: "Denver7", region: "Front Range", urls: ["https://www.denver7.com/news/local-news.rss", googleNewsSite("denver7.com")] },
   { name: "CBS Colorado", region: "Front Range", urls: ["https://www.cbsnews.com/colorado/latest/rss/main", googleNewsSite("cbsnews.com/colorado")] },
-  { name: "Denver Post", region: "Front Range", urls: [
+  {
+    name: "Denver Post",
+    region: "Front Range",
+    urls: [
       "https://www.denverpost.com/feed/",
-      googleNewsSearch("site:denverpost.com Denver Colorado"),
-      googleNewsSearch("site:denverpost.com Colorado news"),
-      googleNewsSearch("Denver Post Colorado")
-    ], linkMustContain: "denverpost.com" },
+      "https://www.denverpost.com/news/feed/",
+      "https://www.denverpost.com/news/colorado/feed/",
+      googleNewsSearch("site:denverpost.com Colorado")
+    ]
+  },
 
   { name: "Aspen Daily News", region: "Mountains", urls: [googleNewsSearch("site:aspendailynews.com Aspen Colorado"), googleNewsSite("aspendailynews.com")] },
   { name: "Vail Daily", region: "Mountains", urls: ["https://www.vaildaily.com/feed/", googleNewsSite("vaildaily.com")] },
@@ -46,6 +63,7 @@ const regionOrder = ["Western Slope", "Statewide", "Front Range", "Mountains"];
 const regionIds = { "Western Slope": "western-slope", "Statewide": "statewide", "Front Range": "front-range", "Mountains": "mountains" };
 const MAX_PER_SOURCE = 5;
 const RSS_PROXY = "https://api.rss2json.com/v1/api.json?rss_url=";
+const RAW_PROXY = "https://api.allorigins.win/raw?url=";
 
 function escapeHtml(value = "") {
   return value.replace(/[&<>'\"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'\"':"&quot;"}[char]));
@@ -67,33 +85,64 @@ function formatStoryDate(date) {
   return new Intl.DateTimeFormat("en-US", {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}).format(date);
 }
 
-async function fetchFeedUrl(url) {
+function normalizeItem(item) {
+  return {
+    title: (item.title || "Untitled story").trim(),
+    link: item.link || item.guid || "#",
+    date: storyDate(item),
+    description: item.description || item.content || item.contentSnippet || ""
+  };
+}
+
+async function fetchWithRss2Json(url) {
   const response = await fetch(`${RSS_PROXY}${encodeURIComponent(url)}`);
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   const data = await response.json();
   if (data.status && data.status !== "ok") throw new Error(data.message || "Feed unavailable");
   if (!Array.isArray(data.items) || data.items.length === 0) throw new Error("No items returned");
-  return data.items;
+  return data.items.map(normalizeItem);
+}
+
+async function fetchWithRawXml(url) {
+  const response = await fetch(`${RAW_PROXY}${encodeURIComponent(url)}`);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const xmlText = await response.text();
+  const xml = new DOMParser().parseFromString(xmlText, "text/xml");
+  const nodes = [...xml.querySelectorAll("item, entry")];
+  if (!nodes.length) throw new Error("No XML items returned");
+  return nodes.map(node => normalizeItem({
+    title: node.querySelector("title")?.textContent || "",
+    link: node.querySelector("link")?.getAttribute("href") || node.querySelector("link")?.textContent || "",
+    guid: node.querySelector("guid")?.textContent || "",
+    pubDate: node.querySelector("pubDate")?.textContent || node.querySelector("published")?.textContent || node.querySelector("updated")?.textContent || "",
+    description: node.querySelector("description")?.textContent || node.querySelector("summary")?.textContent || node.querySelector("content")?.textContent || ""
+  }));
+}
+
+async function fetchFeedUrl(url) {
+  try {
+    return await fetchWithRss2Json(url);
+  } catch (firstError) {
+    console.warn("rss2json failed, trying raw XML:", url, firstError);
+    return fetchWithRawXml(url);
+  }
 }
 
 async function loadFeed(feed) {
-  const candidates = feed.urls || [feed.url, feed.fallback].filter(Boolean);
+  const candidates = feed.urls || [];
   const batches = await Promise.all(candidates.map(async url => {
     try { return await fetchFeedUrl(url); }
     catch (error) { console.warn(`Feed failed for ${feed.name}:`, url, error); return []; }
   }));
 
-  const items = batches.flat();
-  if (!items.length) return { ...feed, items: [], error: true };
+  let stories = batches.flat();
+  if (!stories.length) return { ...feed, items: [], error: true };
 
-  let stories = items.map(item => ({
-    title: (item.title || "Untitled story").trim(),
-    link: item.link || item.guid || "#",
-    date: storyDate(item)
-  }));
-
-  if (feed.linkMustContain) {
-    stories = stories.filter(item => item.link.toLowerCase().includes(feed.linkMustContain.toLowerCase()));
+  if (feed.includeTerms?.length) {
+    stories = stories.filter(item => {
+      const text = `${item.title} ${item.description || ""}`.toLowerCase();
+      return feed.includeTerms.some(term => text.includes(term));
+    });
   }
 
   stories.sort((a,b) => (b.date?.getTime() || 0) - (a.date?.getTime() || 0));
