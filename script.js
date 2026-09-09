@@ -1,37 +1,40 @@
+function googleNewsSearch(query) {
+  return `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
+}
+
+function googleNewsSite(site) {
+  return googleNewsSearch(`site:${site}`);
+}
+
 const feeds = [
   // Statewide
   { name: "Colorado Public Radio", region: "Statewide", url: "https://www.cpr.org/feed/", fallback: googleNewsSite("cpr.org") },
   { name: "The Colorado Sun", region: "Statewide", url: "https://coloradosun.com/feed/", fallback: googleNewsSite("coloradosun.com") },
-  { name: "Colorado Newsline", region: "Statewide", url: "https://coloradonewsline.com/feed/", fallback: googleNewsSite("coloradonewsline.com") },
-  { name: "Colorado Politics", region: "Statewide", url: "https://www.coloradopolitics.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc", fallback: googleNewsSite("coloradopolitics.com") },
+  { name: "Colorado Newsline", region: "Statewide", url: googleNewsSearch("site:coloradonewsline.com Colorado"), fallback: googleNewsSite("coloradonewsline.com") },
+  { name: "Colorado Politics", region: "Statewide", url: googleNewsSearch("site:coloradopolitics.com Colorado politics"), fallback: googleNewsSite("coloradopolitics.com") },
 
   // Front Range
   { name: "FOX31 Denver (KDVR)", region: "Front Range", url: "https://kdvr.com/feed/", fallback: googleNewsSite("kdvr.com") },
-  { name: "9NEWS", region: "Front Range", url: "https://www.9news.com/feeds/syndication/rss/news/local", fallback: googleNewsSite("9news.com") },
+  { name: "9NEWS", region: "Front Range", url: googleNewsSearch("site:9news.com Colorado"), fallback: googleNewsSite("9news.com") },
   { name: "Denver7", region: "Front Range", url: "https://www.denver7.com/news/local-news.rss", fallback: googleNewsSite("denver7.com") },
   { name: "CBS Colorado", region: "Front Range", url: "https://www.cbsnews.com/colorado/latest/rss/main", fallback: googleNewsSite("cbsnews.com/colorado") },
-  { name: "Denver Post", region: "Front Range", url: "https://www.denverpost.com/feed/", fallback: googleNewsSite("denverpost.com") },
+  { name: "Denver Post", region: "Front Range", url: googleNewsSearch("site:denverpost.com Colorado"), fallback: googleNewsSite("denverpost.com") },
 
   // Western Slope
   { name: "KREX5 / WesternSlopeNow", region: "Western Slope", url: "https://www.westernslopenow.com/feed/", fallback: googleNewsSite("westernslopenow.com") },
-  { name: "Grand Junction Daily Sentinel", region: "Western Slope", url: "https://www.gjsentinel.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc", fallback: googleNewsSite("gjsentinel.com") },
+  { name: "Grand Junction Daily Sentinel", region: "Western Slope", url: googleNewsSearch("site:gjsentinel.com Grand Junction OR Mesa County OR Western Slope"), fallback: googleNewsSearch("site:gjsentinel.com Grand Junction") },
   { name: "The Business Times — Grand Junction", region: "Western Slope", url: "https://thebusinesstimes.com/feed/", fallback: googleNewsSite("thebusinesstimes.com") },
   { name: "Glenwood Springs Post Independent", region: "Western Slope", url: "https://www.postindependent.com/feed/", fallback: googleNewsSite("postindependent.com") },
   { name: "Durango Herald", region: "Western Slope", url: "https://www.durangoherald.com/feeds/all", fallback: googleNewsSite("durangoherald.com") },
   { name: "The Journal — Cortez", region: "Western Slope", url: "https://www.the-journal.com/feeds/all", fallback: googleNewsSite("the-journal.com") },
-  { name: "Montrose Daily Press", region: "Western Slope", url: "https://www.montrosepress.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc", fallback: googleNewsSite("montrosepress.com") },
+  { name: "Montrose Daily Press", region: "Western Slope", url: googleNewsSearch("site:montrosepress.com Montrose Colorado"), fallback: googleNewsSite("montrosepress.com") },
 
   // Mountains
-  { name: "Aspen Daily News", region: "Mountains", url: "https://www.aspendailynews.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc", fallback: googleNewsSite("aspendailynews.com") },
+  { name: "Aspen Daily News", region: "Mountains", url: googleNewsSearch("site:aspendailynews.com Aspen Colorado"), fallback: googleNewsSite("aspendailynews.com") },
   { name: "Vail Daily", region: "Mountains", url: "https://www.vaildaily.com/feed/", fallback: googleNewsSite("vaildaily.com") },
   { name: "Summit Daily", region: "Mountains", url: "https://www.summitdaily.com/feed/", fallback: googleNewsSite("summitdaily.com") },
   { name: "Sky-Hi News", region: "Mountains", url: "https://www.skyhinews.com/feed/", fallback: googleNewsSite("skyhinews.com") }
 ];
-
-function googleNewsSite(site) {
-  const query = encodeURIComponent(`site:${site}`);
-  return `https://news.google.com/rss/search?q=${query}&hl=en-US&gl=US&ceid=US:en`;
-}
 
 const regionOrder = ["Statewide", "Front Range", "Western Slope", "Mountains"];
 const regionIds = {
