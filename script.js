@@ -1,5 +1,31 @@
 const feeds = [
-  { name: "Colorado Public Radio", region: "Statewide", url: "https://www.cpr.org/feed/" }
+  // Statewide
+  { name: "Colorado Public Radio", region: "Statewide", url: "https://www.cpr.org/feed/" },
+  { name: "The Colorado Sun", region: "Statewide", url: "https://coloradosun.com/feed/" },
+  { name: "Colorado Newsline", region: "Statewide", url: "https://coloradonewsline.com/feed/" },
+  { name: "Colorado Politics", region: "Statewide", url: "https://www.coloradopolitics.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc" },
+
+  // Front Range
+  { name: "FOX31 Denver (KDVR)", region: "Front Range", url: "https://kdvr.com/feed/" },
+  { name: "9NEWS", region: "Front Range", url: "https://www.9news.com/feeds/syndication/rss/news/local" },
+  { name: "Denver7", region: "Front Range", url: "https://www.denver7.com/news/local-news.rss" },
+  { name: "CBS Colorado", region: "Front Range", url: "https://www.cbsnews.com/colorado/latest/rss/main" },
+  { name: "Denver Post", region: "Front Range", url: "https://www.denverpost.com/feed/" },
+
+  // Western Slope
+  { name: "KREX5 / WesternSlopeNow", region: "Western Slope", url: "https://www.westernslopenow.com/feed/" },
+  { name: "Grand Junction Daily Sentinel", region: "Western Slope", url: "https://www.gjsentinel.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc" },
+  { name: "The Business Times — Grand Junction", region: "Western Slope", url: "https://thebusinesstimes.com/feed/" },
+  { name: "Glenwood Springs Post Independent", region: "Western Slope", url: "https://www.postindependent.com/feed/" },
+  { name: "Durango Herald", region: "Western Slope", url: "https://www.durangoherald.com/feeds/all" },
+  { name: "The Journal — Cortez", region: "Western Slope", url: "https://www.the-journal.com/feeds/all" },
+  { name: "Montrose Daily Press", region: "Western Slope", url: "https://www.montrosepress.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc" },
+
+  // Mountains
+  { name: "Aspen Daily News", region: "Mountains", url: "https://www.aspendailynews.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc" },
+  { name: "Vail Daily", region: "Mountains", url: "https://www.vaildaily.com/feed/" },
+  { name: "Summit Daily", region: "Mountains", url: "https://www.summitdaily.com/feed/" },
+  { name: "Sky-Hi News", region: "Mountains", url: "https://www.skyhinews.com/feed/" }
 ];
 
 const regionOrder = ["Statewide", "Front Range", "Western Slope", "Mountains"];
@@ -94,8 +120,6 @@ function render(allSources) {
   container.innerHTML = regionOrder.map(region => {
     const sources = allSources.filter(source => source.region === region);
     if (!sources.length) return "";
-
-    // All headlines from a source are rendered together in one source group.
     return `
       <section class="region" id="${regionIds[region]}">
         <h2 class="region-title">${escapeHtml(region)}</h2>
