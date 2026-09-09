@@ -6,12 +6,11 @@ function googleNewsSite(site) {
   return googleNewsSearch(`site:${site}`);
 }
 
-const coloradoTerms = [
-  "colorado","grand junction","mesa county","western slope","denver","aurora","colorado springs","pueblo",
-  "montrose","delta","aspen","glenwood","rifle","parachute","palisade","fruita","durango","cortez","telluride",
-  "ouray","ridgway","vail","eagle","summit county","pitkin county","garfield county","gunnison","steamboat",
-  "boulder","fort collins","loveland","greeley","lakewood","arvada","thornton","castle rock","jefferson county",
-  "mesa","rockies","broncos","avalanche","nuggets","buffaloes","csu","cu boulder","state capitol","polis"
+const sentinelLocalTerms = [
+  "grand junction","mesa county","western slope","palisade","fruita","clifton","orchard mesa",
+  "colorado national monument","grand mesa","debeque","collbran","mack","loma","gateway",
+  "mesa state","colorado mesa","cmu","district 51","d51","gunnison","montrose","delta",
+  "garfield county","rifle","parachute","glenwood","pitkin","aspen","ouray","ridgway"
 ];
 
 const feeds = [
@@ -20,12 +19,13 @@ const feeds = [
     name: "Grand Junction Daily Sentinel",
     region: "Western Slope",
     urls: [
-      "https://www.gjsentinel.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc&q=Grand%20Junction",
-      "https://www.gjsentinel.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc&q=Mesa%20County",
-      "https://www.gjsentinel.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc&q=Western%20Slope",
-      "https://www.gjsentinel.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc&q=Colorado"
+      googleNewsSearch("site:gjsentinel.com \"Grand Junction\""),
+      googleNewsSearch("site:gjsentinel.com \"Mesa County\""),
+      googleNewsSearch("site:gjsentinel.com \"Western Slope\""),
+      googleNewsSearch("site:gjsentinel.com Palisade OR Fruita OR Clifton OR Montrose OR Delta")
     ],
-    includeTerms: coloradoTerms
+    includeTerms: sentinelLocalTerms,
+    titleOnlyTerms: sentinelLocalTerms
   },
   { name: "The Business Times — Grand Junction", region: "Western Slope", urls: ["https://thebusinesstimes.com/feed/", googleNewsSite("thebusinesstimes.com")] },
   { name: "Glenwood Springs Post Independent", region: "Western Slope", urls: ["https://www.postindependent.com/feed/", googleNewsSite("postindependent.com")] },
@@ -36,7 +36,7 @@ const feeds = [
   { name: "Colorado Public Radio", region: "Statewide", urls: ["https://www.cpr.org/feed/", googleNewsSite("cpr.org")] },
   { name: "The Colorado Sun", region: "Statewide", urls: ["https://coloradosun.com/feed/", googleNewsSite("coloradosun.com")] },
   { name: "Colorado Newsline", region: "Statewide", urls: [googleNewsSearch("site:coloradonewsline.com Colorado"), googleNewsSite("coloradonewsline.com")] },
-  { name: "Colorado Politics", region: "Statewide", urls: [googleNewsSearch("site:coloradopolitics.com Colorado politics"), googleNewsSite("coloradopolitics.com")] },
+  { name: "Colorado Politics", region: "Statewide", urls: [googleNewsSearch("site:coloradopolitics.com Colorado"), googleNewsSite("coloradopolitics.com")] },
 
   { name: "FOX31 Denver (KDVR)", region: "Front Range", urls: ["https://kdvr.com/feed/", googleNewsSite("kdvr.com")] },
   { name: "9NEWS", region: "Front Range", urls: [googleNewsSearch("site:9news.com Colorado"), googleNewsSite("9news.com")] },
@@ -46,10 +46,10 @@ const feeds = [
     name: "Denver Post",
     region: "Front Range",
     urls: [
+      googleNewsSearch("site:denverpost.com Colorado"),
+      googleNewsSearch("site:denverpost.com Denver OR Colorado Springs OR Aurora OR Boulder"),
       "https://www.denverpost.com/feed/",
-      "https://www.denverpost.com/news/feed/",
-      "https://www.denverpost.com/news/colorado/feed/",
-      googleNewsSearch("site:denverpost.com Colorado")
+      "https://www.denverpost.com/news/colorado/feed/"
     ]
   },
 
@@ -61,7 +61,7 @@ const feeds = [
 
 const regionOrder = ["Western Slope", "Statewide", "Front Range", "Mountains"];
 const regionIds = { "Western Slope": "western-slope", "Statewide": "statewide", "Front Range": "front-range", "Mountains": "mountains" };
-const MAX_PER_SOURCE = 5;
+const MAX_PER_SOURCE = 3;
 const RSS_PROXY = "https://api.rss2json.com/v1/api.json?rss_url=";
 const RAW_PROXY = "https://api.allorigins.win/raw?url=";
 
@@ -70,8 +70,17 @@ function escapeHtml(value = "") {
 }
 
 function safeUrl(value = "") {
-  try { const url = new URL(value); return ["http:", "https:"].includes(url.protocol) ? url.href : "#"; }
-  catch { return "#"; }
+  try {
+    const url = new URL(value);
+    return ["http:", "https:"].includes(url.protocol) ? url.href : "#";
+  } catch {
+    return "#";
+  }
+}
+
+function stripHtml(value = "") {
+  const doc = new DOMParser().parseFromString(value, "text/html");
+  return (doc.body.textContent || "").replace(/\s+/g, " ").trim();
 }
 
 function storyDate(item) {
@@ -82,15 +91,15 @@ function storyDate(item) {
 
 function formatStoryDate(date) {
   if (!date) return "";
-  return new Intl.DateTimeFormat("en-US", {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}).format(date);
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).format(date);
 }
 
 function normalizeItem(item) {
   return {
-    title: (item.title || "Untitled story").trim(),
+    title: stripHtml(item.title || "Untitled story"),
     link: item.link || item.guid || "#",
     date: storyDate(item),
-    description: item.description || item.content || item.contentSnippet || ""
+    description: stripHtml(item.description || item.content || item.contentSnippet || "")
   };
 }
 
@@ -128,29 +137,42 @@ async function fetchFeedUrl(url) {
   }
 }
 
+function matchesTerms(text, terms) {
+  const haystack = text.toLowerCase();
+  return terms.some(term => haystack.includes(term));
+}
+
 async function loadFeed(feed) {
   const candidates = feed.urls || [];
   const batches = await Promise.all(candidates.map(async url => {
-    try { return await fetchFeedUrl(url); }
-    catch (error) { console.warn(`Feed failed for ${feed.name}:`, url, error); return []; }
+    try {
+      return await fetchFeedUrl(url);
+    } catch (error) {
+      console.warn(`Feed failed for ${feed.name}:`, url, error);
+      return [];
+    }
   }));
 
   let stories = batches.flat();
   if (!stories.length) return { ...feed, items: [], error: true };
 
   if (feed.includeTerms?.length) {
-    stories = stories.filter(item => {
-      const text = `${item.title} ${item.description || ""}`.toLowerCase();
-      return feed.includeTerms.some(term => text.includes(term));
-    });
+    stories = stories.filter(item => matchesTerms(`${item.title} ${item.description}`, feed.includeTerms));
   }
 
-  stories.sort((a,b) => (b.date?.getTime() || 0) - (a.date?.getTime() || 0));
+  if (feed.titleOnlyTerms?.length) {
+    const titleMatches = stories.filter(item => matchesTerms(item.title, feed.titleOnlyTerms));
+    if (titleMatches.length >= MAX_PER_SOURCE) stories = titleMatches;
+  }
+
+  stories.sort((a, b) => (b.date?.getTime() || 0) - (a.date?.getTime() || 0));
+
   const seen = new Set();
   const unique = stories.filter(item => {
     const key = item.title.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
     if (!key || seen.has(key)) return false;
-    seen.add(key); return true;
+    seen.add(key);
+    return true;
   });
 
   return { ...feed, items: unique.slice(0, MAX_PER_SOURCE), error: unique.length === 0 };
@@ -160,6 +182,7 @@ function renderSource(source) {
   const stories = source.items.length
     ? `<ul class="headline-list">${source.items.map(item => `<li><a href="${safeUrl(item.link)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.title)}</a>${item.date ? `<div class="story-time">${escapeHtml(formatStoryDate(item.date))}</div>` : ""}</li>`).join("")}</ul>`
     : `<div class="status">${source.error ? "Headlines temporarily unavailable." : "No recent headlines found."}</div>`;
+
   return `<section class="source-group" data-region="${escapeHtml(source.region)}"><h3 class="source-name">${escapeHtml(source.name)}</h3>${stories}</section>`;
 }
 
@@ -191,7 +214,9 @@ document.addEventListener('click', event => {
 async function refresh() {
   const results = await Promise.all(feeds.map(loadFeed));
   render(results);
-  document.getElementById("date").textContent = new Intl.DateTimeFormat("en-US", {month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"}).format(new Date());
+  document.getElementById("date").textContent = new Intl.DateTimeFormat("en-US", {
+    month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit"
+  }).format(new Date());
 }
 
 refresh();
