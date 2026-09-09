@@ -22,7 +22,7 @@ const feeds = [
 
   // Western Slope
   { name: "KREX5 / WesternSlopeNow", region: "Western Slope", url: "https://www.westernslopenow.com/feed/", fallback: googleNewsSite("westernslopenow.com") },
-  { name: "Grand Junction Daily Sentinel", region: "Western Slope", url: googleNewsSearch("site:gjsentinel.com Grand Junction OR Mesa County OR Western Slope"), fallback: googleNewsSearch("site:gjsentinel.com Grand Junction") },
+  { name: "Grand Junction Daily Sentinel", region: "Western Slope", url: googleNewsSearch("site:gjsentinel.com Colorado"), fallback: googleNewsSearch("site:gjsentinel.com (Colorado OR Grand Junction OR Mesa County OR Western Slope)") },
   { name: "The Business Times — Grand Junction", region: "Western Slope", url: "https://thebusinesstimes.com/feed/", fallback: googleNewsSite("thebusinesstimes.com") },
   { name: "Glenwood Springs Post Independent", region: "Western Slope", url: "https://www.postindependent.com/feed/", fallback: googleNewsSite("postindependent.com") },
   { name: "Durango Herald", region: "Western Slope", url: "https://www.durangoherald.com/feeds/all", fallback: googleNewsSite("durangoherald.com") },
